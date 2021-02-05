@@ -4,7 +4,7 @@
 # See COPYING and COPYING.LESSER in the root of the repository for full
 # licensing details.
 """
-Utility functions for input/output.
+Utility functions for xml input/output.
 """
 
 from xml.dom.minidom import Document
