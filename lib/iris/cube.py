@@ -763,7 +763,7 @@ bound=(1994-12-01 00:00:00, 1998-12-01 00:00:00)
         Takes an xml document and returns a copy with all element
         attributes sorted in alphabetical order.
 
-        This is a private utility function required by iris to maintain
+        This is a private utility method required by iris to maintain
         legacy xml behaviour beyond python 3.7.
 
         Args:
