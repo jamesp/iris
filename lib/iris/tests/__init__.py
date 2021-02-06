@@ -50,7 +50,6 @@ import numpy as np
 import numpy.ma as ma
 import requests
 
-from iris import _sort_xml_attrs as sort_xml_attrs
 import iris.cube
 import iris.config
 import iris.util
@@ -577,7 +576,7 @@ class IrisTest_nometa(unittest.TestCase):
         # sort the attributes on xml elements before testing against known good state.
         # this is to be compatible with stored test output where xml attrs are stored in alphabetical order,
         # (which was default behaviour in python <3.8, but changed to insert order in >3.8)
-        doc = sort_xml_attrs(doc)
+        doc = iris.cube.Cube._sort_xml_attrs(doc)
         pretty_xml = doc.toprettyxml(indent="  ")
         reference_path = self.get_result_path(reference_filename)
         self._check_same(
