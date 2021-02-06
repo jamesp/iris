@@ -50,10 +50,10 @@ import numpy as np
 import numpy.ma as ma
 import requests
 
+from iris import _sort_xml_attrs as sort_xml_attrs
 import iris.cube
 import iris.config
 import iris.util
-from iris.xml import sort_xml_attrs
 
 # Test for availability of matplotlib.
 # (And remove matplotlib as an iris.tests dependency.)

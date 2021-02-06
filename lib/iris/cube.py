@@ -48,7 +48,6 @@ from iris.common import (
 import iris.coord_systems
 import iris.coords
 import iris.exceptions
-from iris.xml import sort_xml_attrs
 import iris.util
 
 
@@ -226,6 +225,8 @@ class CubeList(list):
 
     def xml(self, checksum=False, order=True, byteorder=True):
         """Return a string of the XML that this list of cubes represents."""
+
+        from iris import _sort_xml_attrs as sort_xml_attrs
 
         doc = Document()
         cubes_xml_element = doc.createElement("cubes")
@@ -3397,6 +3398,8 @@ bound=(1994-12-01 00:00:00, 1998-12-01 00:00:00)
         Returns a fully valid CubeML string representation of the Cube.
 
         """
+        from iris import _sort_xml_attrs as sort_xml_attrs
+
         doc = Document()
 
         cube_xml_element = self._xml_element(
