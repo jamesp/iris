@@ -53,7 +53,6 @@ import requests
 import iris.cube
 import iris.config
 import iris.util
-from iris.xml import sort_xml_attrs
 
 # Test for availability of matplotlib.
 # (And remove matplotlib as an iris.tests dependency.)
@@ -577,7 +576,7 @@ class IrisTest_nometa(unittest.TestCase):
         # sort the attributes on xml elements before testing against known good state.
         # this is to be compatible with stored test output where xml attrs are stored in alphabetical order,
         # (which was default behaviour in python <3.8, but changed to insert order in >3.8)
-        doc = sort_xml_attrs(doc)
+        doc = iris.cube.Cube._sort_xml_attrs(doc)
         pretty_xml = doc.toprettyxml(indent="  ")
         reference_path = self.get_result_path(reference_filename)
         self._check_same(
