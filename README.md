@@ -45,6 +45,8 @@
      alt="twitter scitools_iris" /></a>
 </p>
 
+[![Gitpod ready-to-code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/SciTools/iris)
+
 <p align="center">
 See the <a href="https://scitools-iris.readthedocs.io/en/latest/">documentation</a> for the <b>latest development version</b> of Iris.
 </P>
