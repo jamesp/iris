@@ -6,12 +6,15 @@ RUN rm miniconda.sh
 
 ENV PATH="${HOME}/miniconda/bin:${PATH}"
 
+RUN conda init bash
+RUN conda config --set always_yes yes --set changeps1 no
+RUN conda config --set show_channel_urls True
+
+
 # WORKDIR /workspace/iris
 
 # RUN conda env create --file=requirements/ci/py38.yml
 
-# RUN conda config --set always_yes yes --set changeps1 no
-# RUN conda config --set show_channel_urls True
 # RUN conda config --add channels conda-forge
 # RUN conda update --quiet --name base conda
 # RUN conda install --quiet --name base nox pip
