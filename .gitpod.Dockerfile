@@ -6,9 +6,9 @@ RUN rm miniconda.sh
 
 ENV PATH="${HOME}/miniconda/bin:${PATH}"
 
-WORKDIR /workspace/iris
+# WORKDIR /workspace/iris
 
-RUN conda env create --file=requirements/ci/py38.yml
+# RUN conda env create --file=requirements/ci/py38.yml
 
 # RUN conda config --set always_yes yes --set changeps1 no
 # RUN conda config --set show_channel_urls True
