@@ -2,4 +2,7 @@ image:
   file: .gitpod.Dockerfile
 
 tasks:
-  - init: conda activate iris-dev && pip install -e .
+  - init: 
+    - conda env create --file=requirements/ci/py38.yml 
+    - conda activate iris-dev
+    - pip install -e .
