@@ -39,7 +39,7 @@ jobs:
         uses: actions/cache@v2.1.4
         with:
           path: $HOME/data
-          key: iris-${{ runner.os }}-${IRIS_TEST_DATA_REF}
+          key: iris-${{ runner.os }}-${{ env.IRIS_TEST_DATA_REF }}
 
       - name: Get iris test data
         if: steps.cache-iris-test-data.outputs.cache-hit != 'true'
@@ -59,15 +59,15 @@ jobs:
           pip install -e .
           pip install asv
           
-#       - name: Run airspeed velocity
-#         env:
-#           OVERRIDE_TEST_DATA_REPOSITORY: $HOME/data/test_data
-#         run: |
-#           source $CONDA/bin/activate $HOME/env
-#           asv run
+      - name: Run airspeed velocity
+        env:
+          OVERRIDE_TEST_DATA_REPOSITORY: $HOME/data/test_data
+        run: |
+          source $CONDA/bin/activate $HOME/env
+          asv run
 
-#       - name: Archive asv results
-#         uses: actions/upload-artifact@v2
-#         with:
-#           name: asv-report
-#           path: .asv
+      - name: Archive asv results
+        uses: actions/upload-artifact@v2
+        with:
+          name: asv-report
+          path: .asv
