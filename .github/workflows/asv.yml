@@ -40,7 +40,7 @@ jobs:
           path: |
             ${{ env.CONDA_ENV_PATH }}
             ~/.asv/env
-          key: iris-${{ runner.os }}-${{ hashFiles('requirements/ci/py*.yml') }}-0
+          key: iris-${{ runner.os }}-${{ hashFiles('requirements/ci/py*.yml') }}
 
       - name: Cache iris test data
         uses: actions/cache@v2.1.4
