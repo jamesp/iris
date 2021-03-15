@@ -40,24 +40,22 @@ jobs:
       # Runs a single command using the runners shell
       - name: create conda environment
         run: |
-          conda init
           cat >env.yml <<EOF
           name: blah
           dependencies:
             - python=3.7
           EOF
           conda env create --quiet -p $HOME/env --file=env.yml
-          conda activate $HOME/env
+          source $CONDA/activate $HOME/env
           
       - name: install iris
         run: |
-          conda init
-          conda activate $HOME/env
+          source $CONDA/activate $HOME/env
           pip install -e .
           
           
       # Runs a set of commands using the runners shell
       - name: Run a multi-line script
         run: |
-          conda activate $HOME/env
+          source $CONDA/activate $HOME/env
           pytest
