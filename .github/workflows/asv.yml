@@ -29,9 +29,9 @@ jobs:
         uses: actions/cache@v2.1.4
         with:
           # A list of files, directories, and wildcard patterns to cache and restore
-          path: /env
+          path: $HOME/env
           # An explicit key for restoring and saving the cache
-          key: ${{ runner.os }}-${{ hashFiles('requirements/ci/py*.yml') }}
+          key: iris-${{ runner.os }}-${{ hashFiles('requirements/ci/py*.yml') }}
 #           # An ordered list of keys to use for restoring the cache if no cache hit occurred for key
 #           restore-keys: # optional
 #           # The chunk size used to split up large files during upload, in bytes
@@ -40,12 +40,7 @@ jobs:
       # Runs a single command using the runners shell
       - name: create conda environment
         run: |
-          cat >env.yml <<EOF
-          name: blah
-          dependencies:
-            - python=3.7
-          EOF
-          conda env create --quiet -p $HOME/env --file=env.yml
+          conda env create --quiet -p $HOME/env --file=requirements/ci/py37.yml
           
       - name: install iris
         run: |
@@ -56,5 +51,5 @@ jobs:
       # Runs a set of commands using the runners shell
       - name: Run a multi-line script
         run: |
-          source $CONDA/activate $HOME/env
+          source $CONDA/bin/activate $HOME/env
           pytest
