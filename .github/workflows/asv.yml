@@ -45,17 +45,17 @@ jobs:
           dependencies:
             - python=3.7
           EOF
-          conda env create --quiet -p /usr/env --file=env.yml
-          conda activate /env
+          conda env create --quiet -p $HOME/env --file=env.yml
+          conda activate $HOME/env
           
       - name: install iris
         run: |
-          conda activate /usr/env
+          conda activate $HOME/env
           pip install -e .
           
           
       # Runs a set of commands using the runners shell
       - name: Run a multi-line script
         run: |
-          conda activate /usr/env
+          conda activate $HOME/env
           pytest
