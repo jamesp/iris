@@ -6,7 +6,7 @@ name: CI
 on:
   # Triggers the workflow on push or pull request events but only for the master branch
   push:
-    branches: [ master ]
+    branches: [ asv-actions-wflow ]
   pull_request:
     branches: [ master ]
 
@@ -28,7 +28,7 @@ jobs:
       # Runs a single command using the runners shell
       - name: create conda environment
         run: |
-          conda env create -y --file=requirements/ci/py37.yml -p /env
+          conda env create --file=requirements/ci/py37.yml -p /env
           conda activate /env
           pip install -e .
           
