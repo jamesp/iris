@@ -46,11 +46,11 @@ jobs:
             - python=3.7
           EOF
           conda env create --quiet -p $HOME/env --file=env.yml
-          conda activate $HOME/env
+          source activate $HOME/env
           
       - name: install iris
         run: |
-          conda activate $HOME/env
+          source activate $HOME/env
           pip install -e .
           
           
