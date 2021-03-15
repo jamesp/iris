@@ -39,7 +39,7 @@ jobs:
         with:
           path: |
             ${{ env.CONDA_ENV_PATH }}
-            ~/.asv/env
+            ~/.asv
           key: iris-${{ runner.os }}-${{ hashFiles('requirements/ci/py*.yml') }}
 
       - name: Cache iris test data
@@ -70,11 +70,11 @@ jobs:
           
       - name: Run airspeed velocity
         env:
-          OVERRIDE_TEST_DATA_REPOSITORY: $${ TEST_DATA_PATH }}/test_data
+          OVERRIDE_TEST_DATA_REPOSITORY: ${{ env.TEST_DATA_PATH }}/test_data
         run: |
           source $CONDA/bin/activate $CONDA_ENV_PATH
           asv machine --yes --machine gh-runner
-          asv run --machine gh-runner ${{ github.sha }}
+          asv run --machine gh-runner ${{ github.sha }}..${{ github.sha }}
           asv publish
 
       - name: Archive asv results
