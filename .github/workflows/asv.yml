@@ -33,12 +33,14 @@ jobs:
       
       - name: Cache conda
         uses: actions/cache@v2.1.4
+        id: cache-conda
         with:
           path: ${{ env.CONDA_ENV_PATH }}
           key: iris-${{ runner.os }}-${{ hashFiles('requirements/ci/py*.yml') }}
 
       - name: Cache iris test data
         uses: actions/cache@v2.1.4
+        id: cache-iris-test-data
         with:
           path: ${{ env.TEST_DATA_PATH }}
           key: iris-${{ runner.os }}-${{ env.IRIS_TEST_DATA_REF }}
@@ -62,15 +64,15 @@ jobs:
           pip install -e .
           pip install asv
           
-      - name: Run airspeed velocity
-        env:
-          OVERRIDE_TEST_DATA_REPOSITORY: $${ TEST_DATA_PATH }}/test_data
-        run: |
-          source $CONDA/bin/activate $CONDA_ENV_PATH
-          asv run
+#       - name: Run airspeed velocity
+#         env:
+#           OVERRIDE_TEST_DATA_REPOSITORY: $${ TEST_DATA_PATH }}/test_data
+#         run: |
+#           source $CONDA/bin/activate $CONDA_ENV_PATH
+#           asv run
 
-      - name: Archive asv results
-        uses: actions/upload-artifact@v2
-        with:
-          name: asv-report
-          path: .asv
+#       - name: Archive asv results
+#         uses: actions/upload-artifact@v2
+#         with:
+#           name: asv-report
+#           path: .asv
