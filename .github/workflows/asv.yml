@@ -31,7 +31,7 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
       
-      - name: Cache
+      - name: Cache conda
         uses: actions/cache@v2.1.4
         with:
           path: ${{ env.CONDA_ENV_PATH }}
@@ -52,6 +52,7 @@ jobs:
 
       # Runs a single command using the runners shell
       - name: create conda environment
+        if: steps.cache-conda.outputs.cache-hit != 'true'
         run: |
           conda env create --quiet -p $CONDA_ENV_PATH --file=requirements/ci/py37.yml
           
