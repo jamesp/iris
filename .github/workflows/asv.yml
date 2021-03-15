@@ -30,11 +30,8 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0  # get full history so asv can do it's thing
-          
-      - name: Check git
-        run: git rev-list --first-parent master
+#         with:
+#           fetch-depth: 0  # get full history so asv can do it's thing
         
       - name: Cache conda
         uses: actions/cache@v2.1.4
@@ -71,19 +68,19 @@ jobs:
           pip install -e .
           pip install asv
           
-#       - name: Run airspeed velocity
-#         env:
-#           OVERRIDE_TEST_DATA_REPOSITORY: ${{ env.TEST_DATA_PATH }}/test_data
-#         run: |
-#           source $CONDA/bin/activate $CONDA_ENV_PATH
-#           asv machine --yes --machine gh-runner
-#           asv run --machine gh-runner --steps=1 HEAD
-#           asv publish
+      - name: Run airspeed velocity
+        env:
+          OVERRIDE_TEST_DATA_REPOSITORY: ${{ env.TEST_DATA_PATH }}/test_data
+        run: |
+          source $CONDA/bin/activate $CONDA_ENV_PATH
+          asv machine --yes --machine gh-runner
+          asv run --machine gh-runner --steps=1 HEAD
+          # asv publish
 
-#       - name: Archive asv results
-#         uses: actions/upload-artifact@v2
-#         with:
-#           name: asv-report
-#           path: |
-#             .asv/html
-#             .asv/results
+      - name: Archive asv results
+        uses: actions/upload-artifact@v2
+        with:
+          name: asv-report
+          path: |
+            .asv/html
+            .asv/results
