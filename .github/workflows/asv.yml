@@ -30,10 +30,8 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
-      
-      - name: test git
-        run: |
-          git checkout ${{ github.sha }}
+        with:
+          fetch-depth: 0  # get full history so asv can do it's thing
           
       - name: Cache conda
         uses: actions/cache@v2.1.4
