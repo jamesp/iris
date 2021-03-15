@@ -45,7 +45,7 @@ jobs:
           dependencies:
             - python=3.7
           EOF
-          conda env create --quiet -p /env --file=env.yml
+          conda env create --quiet -p /usr/env --file=env.yml
           conda activate /env
           
       - name: install iris
