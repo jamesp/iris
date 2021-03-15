@@ -52,8 +52,6 @@ jobs:
         run: |
           conda activate /env
           pip install -e .
-        run: |
-          conda activate /env
           
           
       # Runs a set of commands using the runners shell
