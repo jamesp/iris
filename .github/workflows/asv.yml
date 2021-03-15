@@ -53,23 +53,23 @@ jobs:
       # Runs a single command using the runners shell
       - name: create conda environment
         run: |
-          conda env create --quiet -p $CONDA_ENV --file=requirements/ci/py37.yml
+          conda env create --quiet -p $CONDA_ENV_PATH --file=requirements/ci/py37.yml
           
       - name: install iris and asv
         run: |
-          source $CONDA/bin/activate $CONDA_ENV
+          source $CONDA/bin/activate $CONDA_ENV_PATH
           pip install -e .
           pip install asv
           
-      - name: Run airspeed velocity
-        env:
-          OVERRIDE_TEST_DATA_REPOSITORY: $${ TEST_DATA_PATH }}/test_data
-        run: |
-          source $CONDA/bin/activate $CONDA_ENV
-          asv run
+#       - name: Run airspeed velocity
+#         env:
+#           OVERRIDE_TEST_DATA_REPOSITORY: $${ TEST_DATA_PATH }}/test_data
+#         run: |
+#           source $CONDA/bin/activate $CONDA_ENV_PATH
+#           asv run
 
-      - name: Archive asv results
-        uses: actions/upload-artifact@v2
-        with:
-          name: asv-report
-          path: .asv
+#       - name: Archive asv results
+#         uses: actions/upload-artifact@v2
+#         with:
+#           name: asv-report
+#           path: .asv
