@@ -3,7 +3,7 @@
 name: airspeed-velocity
 
 env:
-  TEST_DATA_VERSION: 2.0.0  
+  IRIS_TEST_DATA_REF: 2.0.0  
 
 
 # Controls when the action will run. 
@@ -39,12 +39,12 @@ jobs:
         uses: actions/cache@v2.1.4
         with:
           path: $HOME/data
-          key: iris-${{ runner.os }}-${TEST_DATA_VERSION}
+          key: iris-${{ runner.os }}-${IRIS_TEST_DATA_REF}
 
       - name: Get iris test data
         if: steps.cache-iris-test-data.outputs.cache-hit != 'true'
         run: |
-          wget --quiet https://github.com/SciTools/iris-test-data/archive/v${TEST_DATA_VERSION}.zip -O iris-test-data.zip
+          wget --quiet https://github.com/SciTools/iris-test-data/archive/v${IRIS_TEST_DATA_REF}.zip -O iris-test-data.zip
           unzip -q iris-test-data.zip
           mv iris-test-data-$(echo "${IRIS_TEST_DATA_REF}" | sed "s/^v//") $HOME/data
 
@@ -53,23 +53,21 @@ jobs:
         run: |
           conda env create --quiet -p $HOME/env --file=requirements/ci/py37.yml
           
-      - name: install iris
+      - name: install iris and asv
         run: |
           source $CONDA/bin/activate $HOME/env
           pip install -e .
-          
-          
-      # Runs a set of commands using the runners shell
-      - name: Run airspeed velocity
-        env:
-          OVERRIDE_TEST_DATA_REPOSITORY: $HOME/data/test_data
-        run: |
-          source $CONDA/bin/activate $HOME/env
           pip install asv
-          asv run
+          
+#       - name: Run airspeed velocity
+#         env:
+#           OVERRIDE_TEST_DATA_REPOSITORY: $HOME/data/test_data
+#         run: |
+#           source $CONDA/bin/activate $HOME/env
+#           asv run
 
-      - name: Archive asv results
-        uses: actions/upload-artifact@v2
-        with:
-          name: asv-report
-          path: .asv
+#       - name: Archive asv results
+#         uses: actions/upload-artifact@v2
+#         with:
+#           name: asv-report
+#           path: .asv
