@@ -39,8 +39,10 @@ jobs:
         uses: actions/cache@v2.1.4
         id: cache-conda
         with:
-          path: ${{ env.CONDA_ENV_PATH }}
-          key: iris-${{ runner.os }}-${{ hashFiles('requirements/ci/py*.yml') }}
+          path: |
+            ${{ env.CONDA_ENV_PATH }}
+            ~/.asv/env
+          key: iris-${{ runner.os }}-${{ hashFiles('requirements/ci/py*.yml') }}-0
 
       - name: Cache iris test data
         uses: actions/cache@v2.1.4
@@ -73,11 +75,14 @@ jobs:
           OVERRIDE_TEST_DATA_REPOSITORY: $${ TEST_DATA_PATH }}/test_data
         run: |
           source $CONDA/bin/activate $CONDA_ENV_PATH
-          asv machine --yes
-          asv run ${{ github.sha }}
+          asv machine --yes --machine gh-runner
+          asv run --machine gh-runner ${{ github.sha }}
+          asv publish
 
       - name: Archive asv results
         uses: actions/upload-artifact@v2
         with:
           name: asv-report
-          path: .asv
+          path: |
+            .asv/html
+            .asv/results
