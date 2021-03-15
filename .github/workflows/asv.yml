@@ -33,7 +33,6 @@ jobs:
       
       - name: test git
         run: |
-          git info
           git checkout master
           
       - name: Cache conda
