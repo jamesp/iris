@@ -69,6 +69,7 @@ jobs:
           OVERRIDE_TEST_DATA_REPOSITORY: $${ TEST_DATA_PATH }}/test_data
         run: |
           source $CONDA/bin/activate $CONDA_ENV_PATH
+          asv machine --yes
           asv run
 
       - name: Archive asv results
