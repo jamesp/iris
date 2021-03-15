@@ -25,17 +25,17 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
 
-#       - name: Cache
-#         uses: actions/cache@v2.1.4
-#         with:
-#           # A list of files, directories, and wildcard patterns to cache and restore
-#           path: /env
-#           # An explicit key for restoring and saving the cache
-#           key: ${{ runner.os }}-${{ hashFiles('requirements/ci/py*.yml') }}
-# #           # An ordered list of keys to use for restoring the cache if no cache hit occurred for key
-# #           restore-keys: # optional
-# #           # The chunk size used to split up large files during upload, in bytes
-# #           upload-chunk-size: # optional
+      - name: Cache
+        uses: actions/cache@v2.1.4
+        with:
+          # A list of files, directories, and wildcard patterns to cache and restore
+          path: /env
+          # An explicit key for restoring and saving the cache
+          key: ${{ runner.os }}-${{ hashFiles('requirements/ci/py*.yml') }}
+#           # An ordered list of keys to use for restoring the cache if no cache hit occurred for key
+#           restore-keys: # optional
+#           # The chunk size used to split up large files during upload, in bytes
+#           upload-chunk-size: # optional
 
       # Runs a single command using the runners shell
       - name: create conda environment
@@ -46,11 +46,10 @@ jobs:
             - python=3.7
           EOF
           conda env create --quiet -p $HOME/env --file=env.yml
-          source $CONDA/activate $HOME/env
           
       - name: install iris
         run: |
-          source $CONDA/activate $HOME/env
+          source $CONDA/bin/activate $HOME/env
           pip install -e .
           
           
