@@ -7,6 +7,7 @@
 Regridding functions.
 
 """
+from __future__ import absolute_import, division, print_function
 
 import copy
 import functools
@@ -17,9 +18,8 @@ import cf_units
 import numpy as np
 import numpy.ma as ma
 import scipy.interpolate
+import six
 
-from iris._lazy_data import map_complete_blocks
-import iris.analysis.cartography
 from iris.analysis._interpolation import (
     get_xy_dim_coords,
     get_xy_coords,
@@ -211,21 +211,21 @@ def _cropped_bounds(bounds, lower, upper):
                 lindex = np.nonzero(bounds[:, 0] <= lower)[0][-1]
             if upper > bounds[-1, 1]:
                 # Region extends above bounds so use last upper bound.
-                uindex = n - 1
+                u = n - 1
                 upper = bounds[-1, 1]
             else:
                 # Index of first upper bound greater than or equal to
                 # upper.
-                uindex = np.nonzero(bounds[:, 1] >= upper)[0][0]
+                u = np.nonzero(bounds[:, 1] >= upper)[0][0]
             # Extract the bounds in our region defined by lower->upper.
-            new_bounds = np.copy(bounds[lindex : (uindex + 1), :])
+            new_bounds = np.copy(bounds[lindex : (u + 1), :])
             # Replace first and last values with specified bounds.
             new_bounds[0, 0] = lower
             new_bounds[-1, 1] = upper
             if reversed_flag:
-                indices = slice(n - (uindex + 1), n - lindex)
+                indices = slice(n - (u + 1), n - lindex)
             else:
-                indices = slice(lindex, uindex + 1)
+                indices = slice(lindex, u + 1)
     else:
         # Two regions [0]->upper, lower->[-1]
         # [0]->upper
@@ -237,21 +237,21 @@ def _cropped_bounds(bounds, lower, upper):
         else:
             if upper > bounds[-1, 1]:
                 # Whole of bounds.
-                uindex = n - 1
+                u = n - 1
                 upper = bounds[-1, 1]
             else:
                 # Index of first upper bound greater than or equal to upper.
-                uindex = np.nonzero(bounds[:, 1] >= upper)[0][0]
+                u = np.nonzero(bounds[:, 1] >= upper)[0][0]
             # Extract the bounds in our region defined by [0]->upper.
-            new_bounds_left = np.copy(bounds[0 : (uindex + 1), :])
+            new_bounds_left = np.copy(bounds[0 : (u + 1), :])
             # Replace last value with specified bound.
             new_bounds_left[-1, 1] = upper
             if reversed_flag:
-                indices_left = tuple(range(n - (uindex + 1), n))
-                slice_left = slice(n - (uindex + 1), n)
+                indices_left = tuple(range(n - (u + 1), n))
+                slice_left = slice(n - (u + 1), n)
             else:
-                indices_left = tuple(range(0, uindex + 1))
-                slice_left = slice(0, uindex + 1)
+                indices_left = tuple(range(0, u + 1))
+                slice_left = slice(0, u + 1)
         # lower->[-1]
         if lower > bounds[-1, 1]:
             # Region is outside src bounds.
@@ -855,11 +855,11 @@ def _regrid_area_weighted_rectilinear_src_and_grid__prepare(
 
                 # Determine whether element i, j overlaps with src and hence
                 # an area weight should be computed.
-                # If x_0 > x_1 then we want [0]->x_1 and x_0->[0] + mod in the case
-                # of wrapped longitudes. However if the src grid is not global
-                # (i.e. circular) this new cell would include a region outside of
-                # the extent of the src grid and thus the weight is therefore
-                # invalid.
+                # If x_0 > x_1 then we want [0]->x_1 and x_0->[0] + mod in
+                # the case of wrapped longitudes. However if the src grid is
+                # not global (i.e. circular) this new cell would include a
+                # region outside of the extent of the src grid and thus the
+                # weight is therefore invalid.
                 outside_extent = x_0 > x_1 and not circular
                 if (
                     outside_extent
@@ -932,16 +932,12 @@ def _regrid_area_weighted_rectilinear_src_and_grid__perform(
     ) = regrid_info
 
     # Calculate new data array for regridded cube.
-    regrid = functools.partial(
-        _regrid_area_weighted_array,
-        x_dim=src_x_dim,
-        y_dim=src_y_dim,
-        weights_info=weights_info,
-        mdtol=mdtol,
-    )
-
-    new_data = map_complete_blocks(
-        src_cube, regrid, (src_y_dim, src_x_dim), meshgrid_x.shape
+    new_data = _regrid_area_weighted_array(
+        src_cube.data,
+        src_x_dim,
+        src_y_dim,
+        weights_info,
+        mdtol,
     )
 
     # Wrap up the data as a Cube.
@@ -1028,7 +1024,7 @@ def regrid_weighted_curvilinear_to_rectilinear(src_cube, weights, grid_cube):
     return result
 
 
-class PointInCell:
+class PointInCell(object):
     """
     This class describes the point-in-cell regridding scheme for use
     typically with :meth:`iris.cube.Cube.regrid()`.
@@ -1064,7 +1060,7 @@ class PointInCell:
         )
 
 
-class _ProjectedUnstructuredRegridder:
+class _ProjectedUnstructuredRegridder(object):
     """
     This class provides regridding that uses scipy.interpolate.griddata.
 
@@ -1331,7 +1327,7 @@ class _ProjectedUnstructuredRegridder:
         # Copy across any AuxFactory instances, and regrid their reference
         # surfaces where required.
         for factory in src.aux_factories:
-            for coord in factory.dependencies.values():
+            for coord in six.itervalues(factory.dependencies):
                 if coord is None:
                     continue
                 dims = src.coord_dims(coord)
@@ -1385,6 +1381,7 @@ class _ProjectedUnstructuredRegridder:
         src_x_coord, src_y_coord = get_xy_coords(src_cube)
         tgt_x_coord, tgt_y_coord = self._tgt_grid
         src_cs = src_x_coord.coord_system
+        # tgt_cs = tgt_x_coord.coord_system
 
         if src_x_coord.coord_system != src_y_coord.coord_system:
             raise ValueError(
@@ -1442,7 +1439,7 @@ class _ProjectedUnstructuredRegridder:
         return new_cube
 
 
-class ProjectedUnstructuredLinear:
+class ProjectedUnstructuredLinear(object):
     """
     This class describes the linear regridding scheme which uses the
     scipy.interpolate.griddata to regrid unstructured data on to a grid.
@@ -1479,8 +1476,6 @@ class ProjectedUnstructuredLinear:
         constructing your own regridder is preferable. These are detailed in
         the :ref:`user guide <caching_a_regridder>`.
 
-        Does not support lazy regridding.
-
         Args:
 
         * src_cube:
@@ -1503,7 +1498,7 @@ class ProjectedUnstructuredLinear:
         )
 
 
-class ProjectedUnstructuredNearest:
+class ProjectedUnstructuredNearest(object):
     """
     This class describes the nearest regridding scheme which uses the
     scipy.interpolate.griddata to regrid unstructured data on to a grid.
@@ -1545,8 +1540,6 @@ class ProjectedUnstructuredNearest:
         regridding a cube. There are, however, some situations when
         constructing your own regridder is preferable. These are detailed in
         the :ref:`user guide <caching_a_regridder>`.
-
-        Does not support lazy regridding.
 
         Args:
 
